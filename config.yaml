@@ -7,7 +7,7 @@ workload:
   num_tasks: 100
   
   # Duration of short tasks in milliseconds
-  short_task_duration_ms: 300
+  short_task_duration_ms: 100
   
   # Duration of long tasks in milliseconds
   long_task_duration_ms: 2000

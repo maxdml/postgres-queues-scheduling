@@ -85,4 +85,3 @@ func (c *WorkloadConfig) ShortTaskDuration() time.Duration {
 func (c *WorkloadConfig) LongTaskDuration() time.Duration {
 	return time.Duration(c.LongTaskDurationMs) * time.Millisecond
 }
-

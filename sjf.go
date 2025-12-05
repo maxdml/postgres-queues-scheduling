@@ -16,7 +16,7 @@ func SJF() {
 	cfg := AppConfig.Workload
 	shortDuration := cfg.ShortTaskDuration()
 	longDuration := cfg.LongTaskDuration()
-	
+
 	avgTaskDuration := time.Duration(float64(shortDuration)*cfg.ShortTaskProbability +
 		float64(longDuration)*(1-cfg.ShortTaskProbability))
 	interArrivalTime := time.Duration(float64(avgTaskDuration) / cfg.TargetUtilization)
@@ -45,7 +45,7 @@ func SJF() {
 	}
 
 	// Create a priority queue with worker concurrency of 1 (single worker)
-	sjfQueue := dbos.NewWorkflowQueue(dbosContext, "sjf_queue", dbos.WithWorkerConcurrency(1), dbos.WithPriorityEnabled(), dbos.WithQueueBasePollingInterval(100*time.Millisecond), dbos.WithQueueMaxPollingInterval(100*time.Millisecond))
+	sjfQueue := dbos.NewWorkflowQueue(dbosContext, "sjf_queue", dbos.WithWorkerConcurrency(1), dbos.WithPriorityEnabled(), dbos.WithQueueBasePollingInterval(100*time.Millisecond), dbos.WithQueueMaxPollingInterval(10*time.Millisecond))
 
 	// Register the workflow
 	dbos.RegisterWorkflow(dbosContext, processTask)
@@ -143,4 +143,3 @@ func SJF() {
 	fmt.Println("Demo completed successfully!")
 	fmt.Println("============================================================")
 }
-

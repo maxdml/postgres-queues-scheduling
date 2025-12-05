@@ -16,7 +16,7 @@ func FCFS() {
 	cfg := AppConfig.Workload
 	shortDuration := cfg.ShortTaskDuration()
 	longDuration := cfg.LongTaskDuration()
-	
+
 	avgTaskDuration := time.Duration(float64(shortDuration)*cfg.ShortTaskProbability +
 		float64(longDuration)*(1-cfg.ShortTaskProbability))
 	interArrivalTime := time.Duration(float64(avgTaskDuration) / cfg.TargetUtilization)
@@ -32,20 +32,20 @@ func FCFS() {
 	fmt.Printf("  Average task duration: %v\n", avgTaskDuration)
 	fmt.Printf("  Target utilization: %.0f%%\n", cfg.TargetUtilization*100)
 	fmt.Printf("  Average inter-arrival time: %v\n", interArrivalTime)
-	fmt.Printf("  Queue: Single FIFO queue with single worker\n")
+	fmt.Printf("  Queue: Single fcfs queue with single worker\n")
 	fmt.Println("============================================================")
 
 	// Initialize DBOS context with PostgreSQL
 	dbosContext, err := dbos.NewDBOSContext(context.Background(), dbos.Config{
-		AppName:     "fifo-queue-demo",
+		AppName:     "fcfs-queue-demo",
 		DatabaseURL: os.Getenv("DBOS_SYSTEM_DATABASE_URL"),
 	})
 	if err != nil {
 		panic(fmt.Sprintf("Initializing DBOS failed: %v", err))
 	}
 
-	// Create a single FIFO queue with worker concurrency of 1 (single worker)
-	fifoQueue := dbos.NewWorkflowQueue(dbosContext, "fifo_queue", dbos.WithWorkerConcurrency(1), dbos.WithQueueBasePollingInterval(100*time.Millisecond), dbos.WithQueueMaxPollingInterval(100*time.Millisecond))
+	// Create a single fcfs queue with worker concurrency of 1 (single worker)
+	fcfsQueue := dbos.NewWorkflowQueue(dbosContext, "fcfs_queue", dbos.WithWorkerConcurrency(1), dbos.WithQueueBasePollingInterval(100*time.Millisecond), dbos.WithQueueMaxPollingInterval(10*time.Millisecond))
 
 	// Register the workflow
 	dbos.RegisterWorkflow(dbosContext, processTask)
@@ -58,7 +58,7 @@ func FCFS() {
 	defer dbos.Shutdown(dbosContext, 5*time.Second)
 
 	// Enqueue tasks one at a time, respecting arrival times
-	fmt.Printf("\nEnqueueing tasks to FIFO queue with respect to arrival times...\n")
+	fmt.Printf("\nEnqueueing tasks to fcfs queue with respect to arrival times...\n")
 	startTime := time.Now()
 	handles := make([]dbos.WorkflowHandle[Task], cfg.NumTasks)
 	completedTasks := make([]Task, cfg.NumTasks)
@@ -93,7 +93,7 @@ func FCFS() {
 		}
 
 		// Enqueue the task
-		handle, err := dbos.RunWorkflow(dbosContext, processTask, task, dbos.WithQueue(fifoQueue.Name))
+		handle, err := dbos.RunWorkflow(dbosContext, processTask, task, dbos.WithQueue(fcfsQueue.Name))
 		if err != nil {
 			panic(fmt.Sprintf("Failed to enqueue task %d: %v", i, err))
 		}
@@ -128,7 +128,7 @@ func FCFS() {
 
 	// Generate unique filename with timestamp
 	timestamp := time.Now().Format("20060102_150405")
-	filename := filepath.Join(resultsDir, fmt.Sprintf("fifo_results_%s.csv", timestamp))
+	filename := filepath.Join(resultsDir, fmt.Sprintf("fcfs_results_%s.csv", timestamp))
 
 	// Export results to CSV
 	fmt.Printf("\nExporting results...\n")
@@ -140,4 +140,3 @@ func FCFS() {
 	fmt.Println("Demo completed successfully!")
 	fmt.Println("============================================================")
 }
-
