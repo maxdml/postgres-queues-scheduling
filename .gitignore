@@ -1,4 +1,6 @@
 # Python-generated files
+__pycache__/
+.python-version
 
 # Virtual environments
 .venv
