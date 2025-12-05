@@ -114,8 +114,8 @@ def plot_response_time_comparison(csv_files):
     algorithms = [r['algorithm'] for r in results]
     num_algorithms = len(algorithms)
     
-    # Create figure with 3 subplots in a column
-    fig, axes = plt.subplots(3, 1, figsize=(14, 16))
+    # Create figure with 2 subplots in a column (Short and Long tasks only)
+    fig, axes = plt.subplots(2, 1, figsize=(14, 12))
     
     # Define metrics and their positions
     metrics = ['Median', 'P90', 'P99']
@@ -129,26 +129,26 @@ def plot_response_time_comparison(csv_files):
         'P99': '#F18F01'      # Orange
     }
     
-    # Plot 1: All Tasks
-    ax1 = axes[0]
-    all_medians = [r['all']['median'] for r in results]
-    all_p90s = [r['all']['p90'] for r in results]
-    all_p99s = [r['all']['p99'] for r in results]
+    # Plot 1: All Tasks (COMMENTED OUT)
+    # ax1 = axes[0]
+    # all_medians = [r['all']['median'] for r in results]
+    # all_p90s = [r['all']['p90'] for r in results]
+    # all_p99s = [r['all']['p99'] for r in results]
+    # 
+    # bars1 = ax1.bar(x - width, all_medians, width, label='Median', color=colors['Median'], edgecolor='black', linewidth=1)
+    # bars2 = ax1.bar(x, all_p90s, width, label='P90', color=colors['P90'], edgecolor='black', linewidth=1)
+    # bars3 = ax1.bar(x + width, all_p99s, width, label='P99', color=colors['P99'], edgecolor='black', linewidth=1)
+    # 
+    # ax1.set_xlabel('Scheduling Algorithm', fontsize=12, fontweight='bold')
+    # ax1.set_ylabel('Response Time (ms)', fontsize=12, fontweight='bold')
+    # ax1.set_title('All Tasks - Response Time Statistics', fontsize=14, fontweight='bold', pad=10)
+    # ax1.set_xticks(x)
+    # ax1.set_xticklabels(algorithms)
+    # ax1.legend(loc='upper left')
+    # ax1.grid(True, alpha=0.3, axis='y', linestyle='--')
     
-    bars1 = ax1.bar(x - width, all_medians, width, label='Median', color=colors['Median'], edgecolor='black', linewidth=1)
-    bars2 = ax1.bar(x, all_p90s, width, label='P90', color=colors['P90'], edgecolor='black', linewidth=1)
-    bars3 = ax1.bar(x + width, all_p99s, width, label='P99', color=colors['P99'], edgecolor='black', linewidth=1)
-    
-    ax1.set_xlabel('Scheduling Algorithm', fontsize=12, fontweight='bold')
-    ax1.set_ylabel('Response Time (ms)', fontsize=12, fontweight='bold')
-    ax1.set_title('All Tasks - Response Time Statistics', fontsize=14, fontweight='bold', pad=10)
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(algorithms)
-    ax1.legend(loc='upper left')
-    ax1.grid(True, alpha=0.3, axis='y', linestyle='--')
-    
-    # Plot 2: Short Tasks
-    ax2 = axes[1]
+    # Plot 1: Short Tasks (now first row)
+    ax2 = axes[0]
     short_medians = [r['short']['median'] if r['short'] else 0 for r in results]
     short_p90s = [r['short']['p90'] if r['short'] else 0 for r in results]
     short_p99s = [r['short']['p99'] if r['short'] else 0 for r in results]
@@ -165,8 +165,8 @@ def plot_response_time_comparison(csv_files):
     ax2.legend(loc='upper left')
     ax2.grid(True, alpha=0.3, axis='y', linestyle='--')
     
-    # Plot 3: Long Tasks
-    ax3 = axes[2]
+    # Plot 2: Long Tasks (now second row)
+    ax3 = axes[1]
     long_medians = [r['long']['median'] if r['long'] else 0 for r in results]
     long_p90s = [r['long']['p90'] if r['long'] else 0 for r in results]
     long_p99s = [r['long']['p99'] if r['long'] else 0 for r in results]
