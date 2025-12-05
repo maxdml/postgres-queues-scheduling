@@ -1,0 +1,20 @@
+# Workload Configuration
+# This file configures the workload parameters for queue scheduling simulations
+# All values are optional - missing values will use defaults
+
+workload:
+  # Number of tasks to process
+  num_tasks: 100
+  
+  # Duration of short tasks in milliseconds
+  short_task_duration_ms: 300
+  
+  # Duration of long tasks in milliseconds
+  long_task_duration_ms: 2000
+  
+  # Probability that a task is short (0.0 to 1.0)
+  short_task_probability: 0.8
+  
+  # Target system utilization (0.0 to 1.0)
+  target_utilization: 0.7
+

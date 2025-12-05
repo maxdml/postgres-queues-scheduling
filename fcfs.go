@@ -13,20 +13,24 @@ import (
 
 // FCFS implements the First-Come-First-Served scheduling algorithm
 func FCFS() {
-	avgTaskDuration := time.Duration(float64(SHORT_TASK_DURATION)*SHORT_TASK_PROBABILITY +
-		float64(LONG_TASK_DURATION)*(1-SHORT_TASK_PROBABILITY))
-	interArrivalTime := time.Duration(float64(avgTaskDuration) / TARGET_UTILIZATION)
+	cfg := AppConfig.Workload
+	shortDuration := cfg.ShortTaskDuration()
+	longDuration := cfg.LongTaskDuration()
+	
+	avgTaskDuration := time.Duration(float64(shortDuration)*cfg.ShortTaskProbability +
+		float64(longDuration)*(1-cfg.ShortTaskProbability))
+	interArrivalTime := time.Duration(float64(avgTaskDuration) / cfg.TargetUtilization)
 
 	fmt.Println("============================================================")
 	fmt.Println("FCFS: First-Come-First-Served Queue Scheduling Demo")
 	fmt.Println("============================================================")
 	fmt.Printf("Configuration:\n")
-	fmt.Printf("  Number of tasks: %d\n", NUM_TASKS)
-	fmt.Printf("  Short task duration: %v\n", SHORT_TASK_DURATION)
-	fmt.Printf("  Long task duration: %v\n", LONG_TASK_DURATION)
-	fmt.Printf("  Short task probability: %.0f%%\n", SHORT_TASK_PROBABILITY*100)
+	fmt.Printf("  Number of tasks: %d\n", cfg.NumTasks)
+	fmt.Printf("  Short task duration: %v\n", shortDuration)
+	fmt.Printf("  Long task duration: %v\n", longDuration)
+	fmt.Printf("  Short task probability: %.0f%%\n", cfg.ShortTaskProbability*100)
 	fmt.Printf("  Average task duration: %v\n", avgTaskDuration)
-	fmt.Printf("  Target utilization: %.0f%%\n", TARGET_UTILIZATION*100)
+	fmt.Printf("  Target utilization: %.0f%%\n", cfg.TargetUtilization*100)
 	fmt.Printf("  Average inter-arrival time: %v\n", interArrivalTime)
 	fmt.Printf("  Queue: Single FIFO queue with single worker\n")
 	fmt.Println("============================================================")
@@ -56,19 +60,19 @@ func FCFS() {
 	// Enqueue tasks one at a time, respecting arrival times
 	fmt.Printf("\nEnqueueing tasks to FIFO queue with respect to arrival times...\n")
 	startTime := time.Now()
-	handles := make([]dbos.WorkflowHandle[Task], NUM_TASKS)
-	completedTasks := make([]Task, NUM_TASKS)
+	handles := make([]dbos.WorkflowHandle[Task], cfg.NumTasks)
+	completedTasks := make([]Task, cfg.NumTasks)
 	shortCount := 0
 	longCount := 0
 
-	for i := range NUM_TASKS {
+	for i := range cfg.NumTasks {
 		// Pick task duration based on probability
 		var duration time.Duration
-		if rand.Float64() < SHORT_TASK_PROBABILITY {
-			duration = SHORT_TASK_DURATION
+		if rand.Float64() < cfg.ShortTaskProbability {
+			duration = shortDuration
 			shortCount++
 		} else {
-			duration = LONG_TASK_DURATION
+			duration = longDuration
 			longCount++
 		}
 
@@ -96,11 +100,11 @@ func FCFS() {
 		handles[i] = handle
 
 		if (i+1)%10 == 0 {
-			fmt.Printf("  Enqueued %d/%d tasks...\n", i+1, NUM_TASKS)
+			fmt.Printf("  Enqueued %d/%d tasks...\n", i+1, cfg.NumTasks)
 		}
 	}
 
-	fmt.Printf("\nAll %d tasks enqueued (%d short, %d long). Processing...\n", NUM_TASKS, shortCount, longCount)
+	fmt.Printf("\nAll %d tasks enqueued (%d short, %d long). Processing...\n", cfg.NumTasks, shortCount, longCount)
 
 	// Wait for all tasks to complete and collect results
 	for i, handle := range handles {
@@ -110,7 +114,7 @@ func FCFS() {
 		}
 		completedTasks[i] = result
 		if (i+1)%10 == 0 {
-			fmt.Printf("  Completed %d/%d tasks...\n", i+1, NUM_TASKS)
+			fmt.Printf("  Completed %d/%d tasks...\n", i+1, cfg.NumTasks)
 		}
 	}
 

@@ -10,15 +10,6 @@ import (
 	"github.com/dbos-inc/dbos-transact-golang/dbos"
 )
 
-// Configuration constants
-const (
-	NUM_TASKS              = 100
-	SHORT_TASK_DURATION    = 300 * time.Millisecond
-	LONG_TASK_DURATION     = 2000 * time.Millisecond
-	SHORT_TASK_PROBABILITY = 0.8
-	TARGET_UTILIZATION     = 0.7
-)
-
 // Task represents a single task with timing information
 type Task struct {
 	TaskID         int
@@ -74,6 +65,12 @@ func processTask(ctx dbos.DBOSContext, task Task) (Task, error) {
 }
 
 func main() {
+	// Load configuration
+	if err := LoadConfig(); err != nil {
+		fmt.Printf("Error loading configuration: %v\n", err)
+		os.Exit(1)
+	}
+
 	// Parse command-line flags
 	algo := flag.String("algo", "fcfs", "Scheduling algorithm to use (fcfs, sjf)")
 	flag.Parse()
