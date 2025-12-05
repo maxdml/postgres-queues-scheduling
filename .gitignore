@@ -1,0 +1,11 @@
+# Python-generated files
+
+# Virtual environments
+.venv
+
+
+# simulation results
+results/
+
+# binary
+main
