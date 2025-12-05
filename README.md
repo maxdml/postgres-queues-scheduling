@@ -65,7 +65,7 @@ Each run generates a timestamped CSV file in the `results/` directory.
 
 Compare the algorithms by plotting their results:
 ```bash
-python plot_results.py results/fcfs_results_*.csv results/sjf_results_*.csv
+python plot_results.py [result.csv] [result.csv] ...
 ```
 
 This generates `algorithm_comparison.png` showing average response time for each algorithm.
